@@ -41,5 +41,8 @@ public class ElektricnaPolnilnicaService {
     public void deleteElektricnaPolnilnica(String lokacija) {
         polnilnicaDAO.deleteElektricnaPolnilnica(lokacija);
     }
+    public void updateElektricnaPolnilnica(ElektricnaPolnilnica polnilnica) {
+        polnilnicaDAO.updateElektricnaPolnilnica(polnilnica);
+    }
 }
 

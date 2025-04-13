@@ -69,4 +69,16 @@ public class ElektricnaPolnilnicaDAO implements ElektricnaPolnilnicaDAOInterface
             return new ArrayList<>(polnilnice);
         }
    }
+    @Override
+    public void updateElektricnaPolnilnica(ElektricnaPolnilnica updatedPolnilnica) {
+        synchronized (polnilnice) {
+            for (int i = 0; i < polnilnice.size(); i++) {
+                ElektricnaPolnilnica current = polnilnice.get(i);
+                if (current.getLokacija().equals(updatedPolnilnica.getLokacija())) {
+                    polnilnice.set(i, updatedPolnilnica);
+                    break;
+                }
+            }
+        }
+    }
 }

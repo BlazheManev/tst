@@ -3,11 +3,13 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
 <h:head>
-    <title>Dodaj električno polnilnico</title>
+    <title>Upravljanje električnih polnilnic</title>
 </h:head>
 
 <h:body>
+    <!-- Navigation -->
     <h:panelGroup>
         <h:link value="🏠 Domov" outcome="index" />
         |
@@ -18,8 +20,9 @@
         <h:link value="🏢 Ponudniki" outcome="ponudnik" />
     </h:panelGroup>
 
-    <h1>Dodaj električno polnilnico</h1>
+    <h1>Električne polnilnice</h1>
 
+    <!-- Add / Edit Form -->
     <h:form>
         <h:panelGrid columns="2">
             <h:outputLabel value="Ime:" />
@@ -45,11 +48,14 @@
             </h:selectManyCheckbox>
         </h:panelGrid>
 
-        <br/>
-        <h:commandButton value="Dodaj polnilnico" action="#{polnilnica.dodajPolnilnico}" />
+        <br />
+        <h:commandButton value="#{polnilnica.izbranaPolnilnica == null ? 'Dodaj polnilnico' : 'Shrani spremembe'}"
+                         action="#{polnilnica.dodajPolnilnico}" />
     </h:form>
+
     <h:commandButton value="🖨️ Izpiši podatke v konzolo"
                      action="#{polnilnica.izpisiVsePodatkeVKonzolo}" />
+
     <h2>Vse polnilnice</h2>
 
     <h:form>
@@ -59,19 +65,37 @@
             <h:column><f:facet name="header">Hitrost</f:facet>#{p.hitrostPolnjenja} kW</h:column>
             <h:column><f:facet name="header">Cena</f:facet>#{p.cenaPolnjenja} €</h:column>
             <h:column><f:facet name="header">Aktivna</f:facet>#{p.active ? 'Da' : 'Ne'}</h:column>
-            <h:column><f:facet name="header">Ponudnik</f:facet>#{p.ponudnik.ime}</h:column>
-            <h:column><f:facet name="header">Vozila</f:facet>
-
+            <h:column><f:facet name="header">Ponudnik</f:facet>#{p.ponudnik != null ? p.ponudnik.ime : '—'}</h:column>
+            <h:column>
+                <f:facet name="header">Kompatibilna vozila</f:facet>
                 <ui:repeat value="#{p.kompatibilnaVozila}" var="v">
                     #{v}<br/>
                 </ui:repeat>
             </h:column>
             <h:column>
-                <h:commandButton value="Izbriši" action="#{polnilnica.izbrisiPolnilnico}">
-                    <f:setPropertyActionListener target="#{polnilnica.selectedLokacija}" value="#{p.lokacija}" />
-                </h:commandButton>
+                <f:facet name="header">Dejanje</f:facet>
+
+                <h:panelGroup>
+                    <!-- Delete Confirm -->
+                    <h:panelGroup rendered="#{polnilnica.lokacijaZaPotrditevBrisanja != p.lokacija}">
+                        <h:commandButton value="Izbriši"
+                                         action="#{polnilnica.potrdiBrisanjePolnilnice(p.lokacija)}" />
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{polnilnica.lokacijaZaPotrditevBrisanja == p.lokacija}">
+                        Ste prepričani?
+                        <h:commandButton value="Da" action="#{polnilnica.potrdiBrisanje}" />
+                        <h:commandButton value="Ne" action="#{polnilnica.prekliciBrisanje}" immediate="true" />
+                    </h:panelGroup>
+
+                    <br/>
+
+                    <!-- Edit -->
+                    <h:commandButton value="Uredi" action="#{polnilnica.pripraviZaUrejanje(p)}" />
+                </h:panelGroup>
             </h:column>
         </h:dataTable>
     </h:form>
+
 </h:body>
 </html>

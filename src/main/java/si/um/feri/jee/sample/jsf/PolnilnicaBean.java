@@ -14,7 +14,6 @@ import java.util.List;
 @SessionScoped
 public class PolnilnicaBean implements Serializable {
 
-    // === Services ===
     private final ElektricnaPolnilnicaService polnilnicaService = new ElektricnaPolnilnicaService();
     private final PonudnikService ponudnikService = new PonudnikService();
 
@@ -28,17 +27,51 @@ public class PolnilnicaBean implements Serializable {
 
     // === Selection ===
     private String selectedLokacija;
+    private String lokacijaZaPotrditevBrisanja;
+    private ElektricnaPolnilnica izbranaPolnilnica;
 
     // === CRUD ===
-
     public void dodajPolnilnico() {
-        polnilnicaService.addElektricnaPolnilnica(ime, lokacija, hitrostPolnjenja, active, cenaPolnjenja, kompatibilnaVozila);
+        if (izbranaPolnilnica == null) {
+            // Add new
+            polnilnicaService.addElektricnaPolnilnica(ime, lokacija, hitrostPolnjenja, active, cenaPolnjenja, kompatibilnaVozila);
+        } else {
+            // Update existing directly (including lokacija)
+            izbranaPolnilnica.setIme(ime);
+            izbranaPolnilnica.setLokacija(lokacija); // <-- this is the editable field
+            izbranaPolnilnica.setHitrostPolnjenja(hitrostPolnjenja);
+            izbranaPolnilnica.setCenaPolnjenja(cenaPolnjenja);
+            izbranaPolnilnica.setActive(active);
+            izbranaPolnilnica.setKompatibilnaVozila(kompatibilnaVozila);
+
+            polnilnicaService.updateElektricnaPolnilnica(izbranaPolnilnica);
+        }
+
         resetForm();
     }
 
-    public void izbrisiPolnilnico() {
-        if (selectedLokacija != null) {
-            polnilnicaService.deleteElektricnaPolnilnica(selectedLokacija);
+    public void pripraviZaUrejanje(ElektricnaPolnilnica p) {
+        this.izbranaPolnilnica = p;
+        this.ime = p.getIme();
+        this.lokacija = p.getLokacija();
+        this.hitrostPolnjenja = p.getHitrostPolnjenja();
+        this.cenaPolnjenja = p.getCenaPolnjenja();
+        this.active = p.isActive();
+        this.kompatibilnaVozila = p.getKompatibilnaVozila();
+    }
+
+    public void potrdiBrisanjePolnilnice(String lokacija) {
+        this.lokacijaZaPotrditevBrisanja = lokacija;
+    }
+
+    public void prekliciBrisanje() {
+        this.lokacijaZaPotrditevBrisanja = null;
+    }
+
+    public void potrdiBrisanje() {
+        if (lokacijaZaPotrditevBrisanja != null) {
+            polnilnicaService.deleteElektricnaPolnilnica(lokacijaZaPotrditevBrisanja);
+            lokacijaZaPotrditevBrisanja = null;
         }
     }
 
@@ -54,8 +87,6 @@ public class PolnilnicaBean implements Serializable {
         ponudnikService.getAllPonudniki().forEach(System.out::println);
     }
 
-    // === Helpers ===
-
     private void resetForm() {
         ime = "";
         lokacija = "";
@@ -63,6 +94,7 @@ public class PolnilnicaBean implements Serializable {
         cenaPolnjenja = 0.0;
         active = false;
         kompatibilnaVozila = null;
+        izbranaPolnilnica = null;
     }
 
     // === Getters & Setters ===
@@ -87,4 +119,10 @@ public class PolnilnicaBean implements Serializable {
 
     public String getSelectedLokacija() { return selectedLokacija; }
     public void setSelectedLokacija(String selectedLokacija) { this.selectedLokacija = selectedLokacija; }
+
+    public ElektricnaPolnilnica getIzbranaPolnilnica() { return izbranaPolnilnica; }
+    public void setIzbranaPolnilnica(ElektricnaPolnilnica izbranaPolnilnica) { this.izbranaPolnilnica = izbranaPolnilnica; }
+
+    public String getLokacijaZaPotrditevBrisanja() { return lokacijaZaPotrditevBrisanja; }
+    public void setLokacijaZaPotrditevBrisanja(String lokacijaZaPotrditevBrisanja) { this.lokacijaZaPotrditevBrisanja = lokacijaZaPotrditevBrisanja; }
 }

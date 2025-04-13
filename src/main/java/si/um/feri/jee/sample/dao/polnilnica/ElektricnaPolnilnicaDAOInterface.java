@@ -13,4 +13,5 @@ public interface ElektricnaPolnilnicaDAOInterface {
     List<ElektricnaPolnilnica> getAllElektricnaPolnilnici();
     void updateElektricnaPolnilnica(String lokacija, Ponudnik newPonudnik);
     void insertElektricnaPolnilnica(ElektricnaPolnilnica polnilnica);
+    void updateElektricnaPolnilnica(ElektricnaPolnilnica polnilnica);
 }
