@@ -46,24 +46,46 @@
                 <f:facet name="header">Ime</f:facet>
                 #{u.ime}
             </h:column>
+
             <h:column>
                 <f:facet name="header">Email</f:facet>
                 #{u.email}
             </h:column>
+
             <h:column>
                 <f:facet name="header">Stanje</f:facet>
                 #{u.stanje}
             </h:column>
+
             <h:column>
                 <f:facet name="header">Tip vozila</f:facet>
                 #{u.tipVozila}
             </h:column>
+
             <h:column>
-                <h:commandButton value="Izbriši" action="#{uporabnikBean.izbrisiUporabnika}">
-                    <f:setPropertyActionListener target="#{uporabnikBean.selectedEmail}" value="#{u.email}" />
-                </h:commandButton>
+                <f:facet name="header">Dejanje</f:facet>
+
+                <h:panelGroup>
+                    <!-- Delete confirmation logic -->
+                    <h:panelGroup rendered="#{uporabnikBean.emailZaPotrditevBrisanja ne u.email}">
+                        <h:commandButton value="Izbriši"
+                                         action="#{uporabnikBean.potrdiBrisanjeUporabnika(u.email)}" />
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{uporabnikBean.emailZaPotrditevBrisanja eq u.email}">
+                        Ste prepričani?
+                        <h:commandButton value="Da" action="#{uporabnikBean.potrdiBrisanje}" />
+                        <h:commandButton value="Ne" action="#{uporabnikBean.prekliciBrisanje}" immediate="true" />
+                    </h:panelGroup>
+
+                    <br/>
+
+                    <!-- Edit button -->
+                    <h:commandButton value="Uredi" action="#{uporabnikBean.pripraviZaUrejanje(u)}" />
+                </h:panelGroup>
             </h:column>
         </h:dataTable>
     </h:form>
+
 </h:body>
 </html>

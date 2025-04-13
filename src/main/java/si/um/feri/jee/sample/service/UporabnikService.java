@@ -32,6 +32,10 @@ public class UporabnikService {
         uporabnikDAO.updateUporabnikStanje(email, novoStanje);
     }
 
+    public void posodobiUporabnika(Uporabnik uporabnik) {
+        uporabnikDAO.updateUporabnik(uporabnik);
+    }
+
     public void izbrisiUporabnika(String email) {
         uporabnikDAO.deleteUporabnik(email);
     }

@@ -57,4 +57,13 @@ public class UporabnikDAO implements UporabnikDAOInterface {
             uporabniki.removeIf(u -> u.getEmail().equals(email));
         }
     }
+    public void updateUporabnik(Uporabnik updated) {
+        Optional<Uporabnik> obstojec = getUporabnikByEmail(updated.getEmail());
+        if (obstojec.isPresent()) {
+            Uporabnik u = obstojec.get();
+            u.setIme(updated.getIme());
+            u.setStanje(updated.getStanje());
+            u.setTipVozila(updated.getTipVozila());
+        }
+    }
 }

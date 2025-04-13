@@ -12,7 +12,6 @@ import java.util.List;
 @SessionScoped
 public class UporabnikBean implements Serializable {
 
-    // === Service ===
     private final UporabnikService uporabnikService = new UporabnikService();
 
     // === Input Fields ===
@@ -20,15 +19,32 @@ public class UporabnikBean implements Serializable {
     private String email;
     private double stanje;
     private String tipVozila;
+    private String emailZaPotrditevBrisanja;
 
     // === Selection ===
     private String selectedEmail;
+    private Uporabnik izbranUporabnik;
 
     // === CRUD ===
 
     public void dodajUporabnika() {
-        uporabnikService.dodajUporabnika(ime, email, stanje, tipVozila);
+        if (izbranUporabnik == null) {
+            uporabnikService.dodajUporabnika(ime, email, stanje, tipVozila);
+        } else {
+            izbranUporabnik.setIme(ime);
+            izbranUporabnik.setStanje(stanje);
+            izbranUporabnik.setTipVozila(tipVozila);
+            uporabnikService.posodobiUporabnika(izbranUporabnik);
+        }
         resetForm();
+    }
+
+    public void pripraviZaUrejanje(Uporabnik u) {
+        this.izbranUporabnik = u;
+        this.ime = u.getIme();
+        this.email = u.getEmail();
+        this.stanje = u.getStanje();
+        this.tipVozila = u.getTipVozila();
     }
 
     public void izbrisiUporabnika() {
@@ -48,8 +64,27 @@ public class UporabnikBean implements Serializable {
         email = "";
         stanje = 0.0;
         tipVozila = "";
+        izbranUporabnik = null;
     }
 
+    public void potrdiBrisanjeUporabnika(String email) {
+        this.emailZaPotrditevBrisanja = email;
+    }
+
+    public void prekliciBrisanje() {
+        this.emailZaPotrditevBrisanja = null;
+    }
+
+    public void potrdiBrisanje() {
+        if (emailZaPotrditevBrisanja != null) {
+            uporabnikService.izbrisiUporabnika(emailZaPotrditevBrisanja);
+            emailZaPotrditevBrisanja = null;
+        }
+    }
+
+    public String getEmailZaPotrditevBrisanja() {
+        return emailZaPotrditevBrisanja;
+    }
     // === Getters & Setters ===
 
     public String getIme() { return ime; }
@@ -66,4 +101,7 @@ public class UporabnikBean implements Serializable {
 
     public String getSelectedEmail() { return selectedEmail; }
     public void setSelectedEmail(String selectedEmail) { this.selectedEmail = selectedEmail; }
+
+    public Uporabnik getIzbranUporabnik() { return izbranUporabnik; }
+    public void setIzbranUporabnik(Uporabnik izbranUporabnik) { this.izbranUporabnik = izbranUporabnik; }
 }
