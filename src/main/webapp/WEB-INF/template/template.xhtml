@@ -1,34 +1,28 @@
 <!DOCTYPE html>
-<html
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-	<meta charset="UTF-8" />
-	<title><ui:insert name="title">Sample</ui:insert></title>
+	<title><ui:insert name="title">Moja aplikacija</ui:insert></title>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+		  crossorigin="anonymous"/>
 </h:head>
 
 <h:body>
+	<div class="container mt-4">
+		<!-- Global Nav -->
+		<nav class="nav mb-4">
+			<h:link value="🏠 Domov" outcome="/" styleClass="nav-link"/>
+			<h:link value="🔌 Polnilnice" outcome="polnilnica" styleClass="nav-link"/>
+			<h:link value="👤 Uporabniki" outcome="uporabnik" styleClass="nav-link"/>
+			<h:link value="🏢 Ponudniki" outcome="ponudnik" styleClass="nav-link"/>
+		</nav>
 
-	<div id="header">
-		<ui:insert name="header">
-    		[
-    			<a href="#{facesContext.externalContext.applicationContextPath}/faces/polnilnica.xhtml">Polnilnica page</a>
-			<a href="#{facesContext.externalContext.applicationContextPath}/faces/ponudnik.xhtml">Ponudnik page</a>
-			<a href="#{facesContext.externalContext.applicationContextPath}/faces/uporabnik.xhtml">Uporabnik page</a>
-
-			]
-    		<hr/>
-		</ui:insert>
+		<!-- Page content -->
+		<ui:insert name="content"/>
 	</div>
-
-	<div id="content">
-		<ui:insert name="content">
-
-
-		</ui:insert>
-	</div>
-
 </h:body>
-
 </html>

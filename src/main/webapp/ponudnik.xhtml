@@ -7,83 +7,88 @@
 <h:head>
     <title>Upravljanje ponudnikov</title>
     <meta charset="UTF-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </h:head>
 
-<h:body>
+<h:body class="container mt-4">
 
     <!-- Navigation -->
-    <h:panelGroup>
-        <h:link value="🏠 Domov" outcome="index" />
-        |
-        <h:link value="🔌 Polnilnice" outcome="polnilnica" />
-        |
-        <h:link value="👤 Uporabniki" outcome="uporabnik" />
-        |
-        <h:link value="🏢 Ponudniki" outcome="ponudnik" />
-    </h:panelGroup>
+    <nav class="mb-4">
+        <h:panelGroup layout="block" styleClass="nav nav-pills">
+            <h:link value="🏠 Domov" outcome="index" styleClass="nav-link" />
+            <h:link value="🔌 Polnilnice" outcome="polnilnica" styleClass="nav-link" />
+            <h:link value="👤 Uporabniki" outcome="uporabnik" styleClass="nav-link" />
+            <h:link value="🏢 Ponudniki" outcome="ponudnik" styleClass="nav-link active" />
+        </h:panelGroup>
+    </nav>
 
-    <h1>Dodaj / Uredi ponudnika</h1>
+    <h2 class="mb-3">Dodaj / Uredi ponudnika</h2>
 
-    <h:form>
-        <h:panelGrid columns="2">
-            <h:outputLabel value="Ime ponudnika:" />
-            <h:inputText value="#{ponudnikBean.ime}" disabled="#{ponudnikBean.izbranPonudnik ne null}" />
-
-            <h:outputLabel value="Naslov:" />
-            <h:inputText value="#{ponudnikBean.naslov}" />
-
-            <h:outputLabel value="Dodaj polnilnice (neobvezno):" />
-            <h:selectManyListbox value="#{ponudnikBean.izbranePolnilnice}" size="5">
-                <f:selectItems value="#{ponudnikBean.prostePolnilnice}" var="p"
-                               itemLabel="#{p.lokacija}" itemValue="#{p}" />
-            </h:selectManyListbox>
-        </h:panelGrid>
-
-        <br/>
-        <h:commandButton value="#{ponudnikBean.izbranPonudnik == null ? 'Dodaj ponudnika' : 'Shrani spremembe'}"
-                         action="#{ponudnikBean.dodajPonudnika}" />
+    <h:form styleClass="mb-5">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <h:outputLabel value="Ime ponudnika:" for="ime" />
+                <h:inputText id="ime" value="#{ponudnikBean.ime}" styleClass="form-control"
+                             disabled="#{ponudnikBean.izbranPonudnik ne null}" />
+            </div>
+            <div class="col-md-6">
+                <h:outputLabel value="Naslov:" for="naslov" />
+                <h:inputText id="naslov" value="#{ponudnikBean.naslov}" styleClass="form-control" />
+            </div>
+            <div class="col-md-12">
+                <h:outputLabel value="Dodaj polnilnice (neobvezno):" />
+                <h:selectManyListbox value="#{ponudnikBean.izbranePolnilnice}" size="5" styleClass="form-select">
+                    <f:selectItems value="#{ponudnikBean.prostePolnilnice}" var="p"
+                                   itemLabel="#{p.lokacija}" itemValue="#{p}" />
+                </h:selectManyListbox>
+            </div>
+            <div class="col-12">
+                <h:commandButton value="#{ponudnikBean.izbranPonudnik == null ? 'Dodaj ponudnika' : 'Shrani spremembe'}"
+                                 action="#{ponudnikBean.dodajPonudnika}" styleClass="btn btn-primary" />
+            </div>
+        </div>
     </h:form>
 
-    <h2>Obstoječi ponudniki</h2>
+    <h2 class="mb-3">Obstoječi ponudniki</h2>
 
     <h:form>
-        <h:dataTable value="#{ponudnikBean.vsiPonudniki}" var="p" border="1">
+        <h:dataTable value="#{ponudnikBean.vsiPonudniki}" var="p" styleClass="table table-bordered table-hover">
             <h:column>
                 <f:facet name="header">Ime</f:facet>
                 #{p.ime}
             </h:column>
-
             <h:column>
                 <f:facet name="header">Naslov</f:facet>
                 #{p.naslov}
             </h:column>
-
             <h:column>
                 <f:facet name="header">Polnilnice</f:facet>
                 <ui:repeat value="#{p.polnilnice}" var="pol">
-                    <h:outputText value="#{pol.ime} (#{pol.lokacija})"/><br/>
+                    <h:commandLink value="#{pol.ime} (#{pol.lokacija})" action="polnilnicaPodrobnosti" styleClass="link-primary">
+                        <f:setPropertyActionListener target="#{ponudnikBean.izbranaPolnilnica}" value="#{pol}" />
+                    </h:commandLink><br/>
                 </ui:repeat>
             </h:column>
-
             <h:column>
                 <f:facet name="header">Dejanje</f:facet>
-                <h:panelGroup>
-                    <!-- Delete confirm logic -->
+                <h:panelGroup layout="block">
+                    <!-- Delete confirmation -->
                     <h:panelGroup rendered="#{ponudnikBean.potrdiBrisanjeIme ne p.ime}">
                         <h:commandButton value="Izbriši"
-                                         action="#{ponudnikBean.potrdiBrisanjeIme(p.ime)}" />
+                                         action="#{ponudnikBean.potrdiBrisanjeIme(p.ime)}"
+                                         styleClass="btn btn-danger btn-sm me-1" />
                     </h:panelGroup>
-
                     <h:panelGroup rendered="#{ponudnikBean.potrdiBrisanjeIme eq p.ime}">
                         Ste prepričani?
-                        <h:commandButton value="Da" action="#{ponudnikBean.potrdiBrisanje}" />
-                        <h:commandButton value="Ne" action="#{ponudnikBean.prekliciBrisanje}" immediate="true" />
+                        <h:commandButton value="Da" action="#{ponudnikBean.potrdiBrisanje}" styleClass="btn btn-danger btn-sm me-1" />
+                        <h:commandButton value="Ne" action="#{ponudnikBean.prekliciBrisanje}" immediate="true" styleClass="btn btn-secondary btn-sm" />
                     </h:panelGroup>
 
-                    <br/>
+                    <br/><br/>
 
                     <!-- Edit button -->
-                    <h:commandButton value="Uredi" action="#{ponudnikBean.pripraviZaUrejanje(p)}" />
+                    <h:commandButton value="Uredi" action="#{ponudnikBean.pripraviZaUrejanje(p)}"
+                                     styleClass="btn btn-warning btn-sm" />
                 </h:panelGroup>
             </h:column>
         </h:dataTable>
