@@ -1,10 +1,13 @@
 package si.um.feri.jee.sample.jsf;
 
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
-import si.um.feri.jee.sample.service.ElektricnaPolnilnicaService;
-import si.um.feri.jee.sample.service.PonudnikService;
+import si.um.feri.jee.sample.service.elektricnaPolnilnica.ElektricnaPolnilnicaService;
+import si.um.feri.jee.sample.service.elektricnaPolnilnica.ElektricnaPolnilnicaServiceLocal;
+import si.um.feri.jee.sample.service.ponudnik.PonudnikService;
 import si.um.feri.jee.sample.service.UporabnikService;
+import si.um.feri.jee.sample.service.ponudnik.PonudnikServiceLocal;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
 import si.um.feri.jee.sample.vao.Ponudnik;
 import si.um.feri.jee.sample.vao.Uporabnik;
@@ -19,8 +22,10 @@ import java.util.Optional;
 public class PonudnikBean implements Serializable {
 
     // === Services ===
-    private final PonudnikService ponudnikService = new PonudnikService();
-    private final ElektricnaPolnilnicaService polnilnicaService = new ElektricnaPolnilnicaService();
+    @EJB
+    private PonudnikServiceLocal ponudnikService;
+    @EJB
+    private ElektricnaPolnilnicaServiceLocal polnilnicaService;
     private final UporabnikService uporabnikService = new UporabnikService();
 
     // === Input Fields ===
@@ -100,7 +105,6 @@ public class PonudnikBean implements Serializable {
 
         if (polnilnica.isPresent()) {
             uporabnikService.zacniPolnjenje(uporabnik, polnilnica.get());
-            System.out.println("✅ Polnjenje začeto za: " + izbranEmail + " na polnilnici: " + izbranaPolnilnica.getLokacija());
         } else {
             System.out.println("⚠️ Polnilnica ni bila najdena.");
         }

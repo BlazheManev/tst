@@ -1,11 +1,12 @@
 package si.um.feri.jee.sample.jsf;
 
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
-import si.um.feri.jee.sample.service.ElektricnaPolnilnicaService;
-import si.um.feri.jee.sample.service.PonudnikService;
+import si.um.feri.jee.sample.service.elektricnaPolnilnica.ElektricnaPolnilnicaServiceLocal;
+import si.um.feri.jee.sample.service.ponudnik.PonudnikService;
+import si.um.feri.jee.sample.service.ponudnik.PonudnikServiceLocal;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
-import si.um.feri.jee.sample.vao.Ponudnik;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,10 +14,10 @@ import java.util.List;
 @Named("polnilnica")
 @SessionScoped
 public class PolnilnicaBean implements Serializable {
-
-    private final ElektricnaPolnilnicaService polnilnicaService = new ElektricnaPolnilnicaService();
-    private final PonudnikService ponudnikService = new PonudnikService();
-
+    @EJB
+    private ElektricnaPolnilnicaServiceLocal polnilnicaService;
+    @EJB
+    private PonudnikServiceLocal ponudnikService;
     // === Input Fields ===
     private String ime;
     private String lokacija;
@@ -36,9 +37,8 @@ public class PolnilnicaBean implements Serializable {
             // Add new
             polnilnicaService.addElektricnaPolnilnica(ime, lokacija, hitrostPolnjenja, active, cenaPolnjenja, kompatibilnaVozila);
         } else {
-            // Update existing directly (including lokacija)
             izbranaPolnilnica.setIme(ime);
-            izbranaPolnilnica.setLokacija(lokacija); // <-- this is the editable field
+            izbranaPolnilnica.setLokacija(lokacija);
             izbranaPolnilnica.setHitrostPolnjenja(hitrostPolnjenja);
             izbranaPolnilnica.setCenaPolnjenja(cenaPolnjenja);
             izbranaPolnilnica.setActive(active);

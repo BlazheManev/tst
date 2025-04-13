@@ -1,6 +1,7 @@
-package si.um.feri.jee.sample.service;
+package si.um.feri.jee.sample.service.ponudnik;
 
-import si.um.feri.jee.sample.dao.ponudnik.PonudnikDAO;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import si.um.feri.jee.sample.dao.ponudnik.PonudnikDAOInterface;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
 import si.um.feri.jee.sample.vao.Ponudnik;
@@ -8,8 +9,11 @@ import si.um.feri.jee.sample.vao.Ponudnik;
 import java.util.List;
 import java.util.Optional;
 
-public class PonudnikService {
-    private final PonudnikDAOInterface ponudnikDAO =  PonudnikDAO.getInstance();
+
+@Stateless
+public class PonudnikService implements PonudnikServiceLocal, PonudnikServiceRemote {
+    @Inject
+    private PonudnikDAOInterface ponudnikDAO;
 
     public void createPonudnik(String ime, String naslov, List<ElektricnaPolnilnica> izbranePolnilnice) {
         if (ime == null || ime.isEmpty() || naslov == null || naslov.isEmpty()) {
