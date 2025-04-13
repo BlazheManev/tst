@@ -32,16 +32,45 @@ public class PonudnikBean implements Serializable {
     private String selectedIme;
     private String izbranEmail;
     private ElektricnaPolnilnica izbranaPolnilnica;
+    private String potrdiBrisanjeIme;
+    private Ponudnik izbranPonudnik;
 
     // === CRUD ===
 
     public void dodajPonudnika() {
-        Ponudnik nov = new Ponudnik(ime, naslov);
-        ponudnikService.createPonudnik(nov.getIme(), nov.getNaslov(), izbranePolnilnice);
+        if (izbranPonudnik == null) {
+            ponudnikService.createPonudnik(ime, naslov, izbranePolnilnice);
+        } else {
+            ponudnikService.updatePonudnik(izbranPonudnik.getIme(), naslov);
+        }
+        resetForm();
+    }
+    public void pripraviZaUrejanje(Ponudnik p) {
+        izbranPonudnik = p;
+        ime = p.getIme();
+        naslov = p.getNaslov();
+    }
 
+    public void potrdiBrisanjeIme(String ime) {
+        this.potrdiBrisanjeIme = ime;
+    }
+
+    public void potrdiBrisanje() {
+        if (potrdiBrisanjeIme != null) {
+            ponudnikService.deletePonudnik(potrdiBrisanjeIme);
+            potrdiBrisanjeIme = null;
+        }
+    }
+
+    public void prekliciBrisanje() {
+        potrdiBrisanjeIme = null;
+    }
+
+    private void resetForm() {
         ime = "";
         naslov = "";
         izbranePolnilnice.clear();
+        izbranPonudnik = null;
     }
 
     public void izbrisiPonudnika() {
@@ -131,5 +160,15 @@ public class PonudnikBean implements Serializable {
 
     public void setIzbranaPolnilnica(ElektricnaPolnilnica izbranaPolnilnica) {
         this.izbranaPolnilnica = izbranaPolnilnica;
+    }
+
+    public Ponudnik getIzbranPonudnik() {
+        return izbranPonudnik;
+    }
+    public void setIzbranPonudnik(Ponudnik izbranPonudnik) {
+        this.izbranPonudnik = izbranPonudnik;
+    }
+    public String getPotrdiBrisanjeIme() {
+        return potrdiBrisanjeIme;
     }
 }

@@ -11,6 +11,7 @@
 
 <h:body>
 
+    <!-- Navigation -->
     <h:panelGroup>
         <h:link value="🏠 Domov" outcome="index" />
         |
@@ -21,12 +22,12 @@
         <h:link value="🏢 Ponudniki" outcome="ponudnik" />
     </h:panelGroup>
 
-    <h1>Dodaj ponudnika</h1>
+    <h1>Dodaj / Uredi ponudnika</h1>
 
     <h:form>
         <h:panelGrid columns="2">
             <h:outputLabel value="Ime ponudnika:" />
-            <h:inputText value="#{ponudnikBean.ime}" />
+            <h:inputText value="#{ponudnikBean.ime}" disabled="#{ponudnikBean.izbranPonudnik ne null}" />
 
             <h:outputLabel value="Naslov:" />
             <h:inputText value="#{ponudnikBean.naslov}" />
@@ -38,7 +39,9 @@
             </h:selectManyListbox>
         </h:panelGrid>
 
-        <h:commandButton value="Dodaj ponudnika" action="#{ponudnikBean.dodajPonudnika}" />
+        <br/>
+        <h:commandButton value="#{ponudnikBean.izbranPonudnik == null ? 'Dodaj ponudnika' : 'Shrani spremembe'}"
+                         action="#{ponudnikBean.dodajPonudnika}" />
     </h:form>
 
     <h2>Obstoječi ponudniki</h2>
@@ -58,17 +61,30 @@
             <h:column>
                 <f:facet name="header">Polnilnice</f:facet>
                 <ui:repeat value="#{p.polnilnice}" var="pol">
-                    <h:commandLink value="#{pol.ime}" action="polnilnicaPodrobnosti">
-                        <f:setPropertyActionListener target="#{ponudnikBean.izbranaPolnilnica}" value="#{pol}" />
-                    </h:commandLink><br/>
+                    <h:outputText value="#{pol.ime} (#{pol.lokacija})"/><br/>
                 </ui:repeat>
-
             </h:column>
 
             <h:column>
-                <h:commandButton value="Izbriši" action="#{ponudnikBean.izbrisiPonudnika}">
-                    <f:setPropertyActionListener target="#{ponudnikBean.selectedIme}" value="#{p.ime}" />
-                </h:commandButton>
+                <f:facet name="header">Dejanje</f:facet>
+                <h:panelGroup>
+                    <!-- Delete confirm logic -->
+                    <h:panelGroup rendered="#{ponudnikBean.potrdiBrisanjeIme ne p.ime}">
+                        <h:commandButton value="Izbriši"
+                                         action="#{ponudnikBean.potrdiBrisanjeIme(p.ime)}" />
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{ponudnikBean.potrdiBrisanjeIme eq p.ime}">
+                        Ste prepričani?
+                        <h:commandButton value="Da" action="#{ponudnikBean.potrdiBrisanje}" />
+                        <h:commandButton value="Ne" action="#{ponudnikBean.prekliciBrisanje}" immediate="true" />
+                    </h:panelGroup>
+
+                    <br/>
+
+                    <!-- Edit button -->
+                    <h:commandButton value="Uredi" action="#{ponudnikBean.pripraviZaUrejanje(p)}" />
+                </h:panelGroup>
             </h:column>
         </h:dataTable>
     </h:form>
