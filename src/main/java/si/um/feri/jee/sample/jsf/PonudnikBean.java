@@ -100,7 +100,6 @@ public class PonudnikBean implements Serializable {
 
         if (polnilnica.isPresent()) {
             uporabnikService.zacniPolnjenje(uporabnik, polnilnica.get());
-            System.out.println("✅ Polnjenje začeto za: " + izbranEmail + " na polnilnici: " + izbranaPolnilnica.getLokacija());
         } else {
             System.out.println("⚠️ Polnilnica ni bila najdena.");
         }

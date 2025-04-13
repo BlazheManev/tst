@@ -36,9 +36,8 @@ public class PolnilnicaBean implements Serializable {
             // Add new
             polnilnicaService.addElektricnaPolnilnica(ime, lokacija, hitrostPolnjenja, active, cenaPolnjenja, kompatibilnaVozila);
         } else {
-            // Update existing directly (including lokacija)
             izbranaPolnilnica.setIme(ime);
-            izbranaPolnilnica.setLokacija(lokacija); // <-- this is the editable field
+            izbranaPolnilnica.setLokacija(lokacija);
             izbranaPolnilnica.setHitrostPolnjenja(hitrostPolnjenja);
             izbranaPolnilnica.setCenaPolnjenja(cenaPolnjenja);
             izbranaPolnilnica.setActive(active);
