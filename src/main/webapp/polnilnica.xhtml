@@ -4,121 +4,108 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-<h:head>
-    <title>Upravljanje električnih polnilnic</title>
-    <meta charset="UTF-8" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-</h:head>
+<ui:composition template="/WEB-INF/template/template.xhtml">
 
-<h:body class="container mt-4">
+    <ui:define name="title">Upravljanje električnih polnilnic</ui:define>
 
-    <!-- Navigation -->
-    <nav class="mb-4">
-        <h:panelGroup layout="block" styleClass="nav nav-pills">
-            <h:link value="🏠 Domov" outcome="index" styleClass="nav-link" />
-            <h:link value="🔌 Polnilnice" outcome="polnilnica" styleClass="nav-link active" />
-            <h:link value="👤 Uporabniki" outcome="uporabnik" styleClass="nav-link" />
-            <h:link value="🏢 Ponudniki" outcome="ponudnik" styleClass="nav-link" />
-        </h:panelGroup>
-    </nav>
+    <ui:define name="content">
+        <h2 class="mb-3">Dodaj / Uredi električno polnilnico</h2>
 
-    <h2 class="mb-3">Dodaj / Uredi električno polnilnico</h2>
+        <h:form styleClass="mb-5">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <h:outputLabel value="Ime:" for="ime" />
+                    <h:inputText id="ime" value="#{polnilnica.ime}" styleClass="form-control" />
+                </div>
 
-    <!-- Add / Edit Form -->
-    <h:form styleClass="mb-5">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <h:outputLabel value="Ime:" for="ime" />
-                <h:inputText id="ime" value="#{polnilnica.ime}" styleClass="form-control" />
-            </div>
+                <div class="col-md-6">
+                    <h:outputLabel value="Lokacija:" for="lokacija" />
+                    <h:inputText id="lokacija" value="#{polnilnica.lokacija}" styleClass="form-control" />
+                </div>
 
-            <div class="col-md-6">
-                <h:outputLabel value="Lokacija:" for="lokacija" />
-                <h:inputText id="lokacija" value="#{polnilnica.lokacija}" styleClass="form-control" />
-            </div>
+                <div class="col-md-4">
+                    <h:outputLabel value="Hitrost polnjenja (kW):" for="hitrost" />
+                    <h:inputText id="hitrost" value="#{polnilnica.hitrostPolnjenja}" styleClass="form-control" />
+                </div>
 
-            <div class="col-md-4">
-                <h:outputLabel value="Hitrost polnjenja (kW):" for="hitrost" />
-                <h:inputText id="hitrost" value="#{polnilnica.hitrostPolnjenja}" styleClass="form-control" />
-            </div>
+                <div class="col-md-4">
+                    <h:outputLabel value="Cena (EUR):" for="cena" />
+                    <h:inputText id="cena" value="#{polnilnica.cenaPolnjenja}" styleClass="form-control" />
+                </div>
 
-            <div class="col-md-4">
-                <h:outputLabel value="Cena (EUR):" for="cena" />
-                <h:inputText id="cena" value="#{polnilnica.cenaPolnjenja}" styleClass="form-control" />
-            </div>
+                <div class="col-md-4">
+                    <h:outputLabel value="Aktivna:" />
+                    <div class="form-check mt-2">
+                        <h:selectBooleanCheckbox value="#{polnilnica.active}" styleClass="form-check-input" />
+                    </div>
+                </div>
 
-            <div class="col-md-4">
-                <h:outputLabel value="Aktivna:" />
-                <div class="form-check mt-2">
-                    <h:selectBooleanCheckbox value="#{polnilnica.active}" styleClass="form-check-input" />
+                <div class="col-md-12">
+                    <h:outputLabel value="Kompatibilna vozila:" />
+                    <div class="form-check">
+                        <h:selectManyCheckbox value="#{polnilnica.kompatibilnaVozila}" layout="pageDirection">
+                            <f:selectItem itemLabel="Type1" itemValue="Type1" />
+                            <f:selectItem itemLabel="Type2" itemValue="Type2" />
+                            <f:selectItem itemLabel="Type3" itemValue="Type3" />
+                        </h:selectManyCheckbox>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <h:commandButton value="#{polnilnica.izbranaPolnilnica == null ? 'Dodaj polnilnico' : 'Shrani spremembe'}"
+                                     action="#{polnilnica.dodajPolnilnico}"
+                                     styleClass="btn btn-primary" />
                 </div>
             </div>
+        </h:form>
 
-            <div class="col-md-12">
-                <h:outputLabel value="Kompatibilna vozila:" />
-                <div class="form-check">
-                    <h:selectManyCheckbox value="#{polnilnica.kompatibilnaVozila}" layout="pageDirection">
-                        <f:selectItem itemLabel="Type1" itemValue="Type1" />
-                        <f:selectItem itemLabel="Type2" itemValue="Type2" />
-                        <f:selectItem itemLabel="Type3" itemValue="Type3" />
-                    </h:selectManyCheckbox>
-                </div>
-            </div>
+        <h:commandButton value="🖨️ Izpiši podatke v konzolo"
+                         action="#{polnilnica.izpisiVsePodatkeVKonzolo}"
+                         styleClass="btn btn-secondary mb-3" />
 
-            <div class="col-12">
-                <h:commandButton value="#{polnilnica.izbranaPolnilnica == null ? 'Dodaj polnilnico' : 'Shrani spremembe'}"
-                                 action="#{polnilnica.dodajPolnilnico}"
-                                 styleClass="btn btn-primary" />
-            </div>
-        </div>
-    </h:form>
+        <h2>Vse polnilnice</h2>
 
-    <h:commandButton value="🖨️ Izpiši podatke v konzolo"
-                     action="#{polnilnica.izpisiVsePodatkeVKonzolo}"
-                     styleClass="btn btn-secondary mb-3" />
+        <h:form>
+            <h:dataTable value="#{polnilnica.vsePolnilnice}" var="p" styleClass="table table-bordered table-hover">
+                <h:column><f:facet name="header">Ime</f:facet>#{p.ime}</h:column>
+                <h:column><f:facet name="header">Lokacija</f:facet>#{p.lokacija}</h:column>
+                <h:column><f:facet name="header">Hitrost</f:facet>#{p.hitrostPolnjenja} kW</h:column>
+                <h:column><f:facet name="header">Cena</f:facet>#{p.cenaPolnjenja} €</h:column>
+                <h:column><f:facet name="header">Aktivna</f:facet>#{p.active ? 'Da' : 'Ne'}</h:column>
+                <h:column><f:facet name="header">Ponudnik</f:facet>#{p.ponudnik != null ? p.ponudnik.ime : '—'}</h:column>
+                <h:column>
+                    <f:facet name="header">Vozila</f:facet>
+                    <ui:repeat value="#{p.kompatibilnaVozila}" var="v">
+                        #{v}<br/>
+                    </ui:repeat>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Dejanje</f:facet>
+                    <h:panelGroup layout="block">
+                        <!-- Delete -->
+                        <h:panelGroup rendered="#{polnilnica.lokacijaZaPotrditevBrisanja ne p.lokacija}">
+                            <h:commandButton value="Izbriši"
+                                             action="#{polnilnica.potrdiBrisanjePolnilnice(p.lokacija)}"
+                                             styleClass="btn btn-danger btn-sm me-2" />
+                        </h:panelGroup>
 
-    <h2>Vse polnilnice</h2>
+                        <h:panelGroup rendered="#{polnilnica.lokacijaZaPotrditevBrisanja eq p.lokacija}">
+                            Ste prepričani?
+                            <h:commandButton value="Da" action="#{polnilnica.potrdiBrisanje}" styleClass="btn btn-danger btn-sm me-1" />
+                            <h:commandButton value="Ne" action="#{polnilnica.prekliciBrisanje}" immediate="true" styleClass="btn btn-secondary btn-sm" />
+                        </h:panelGroup>
 
-    <h:form>
-        <h:dataTable value="#{polnilnica.vsePolnilnice}" var="p" styleClass="table table-bordered table-hover">
-            <h:column><f:facet name="header">Ime</f:facet>#{p.ime}</h:column>
-            <h:column><f:facet name="header">Lokacija</f:facet>#{p.lokacija}</h:column>
-            <h:column><f:facet name="header">Hitrost</f:facet>#{p.hitrostPolnjenja} kW</h:column>
-            <h:column><f:facet name="header">Cena</f:facet>#{p.cenaPolnjenja} €</h:column>
-            <h:column><f:facet name="header">Aktivna</f:facet>#{p.active ? 'Da' : 'Ne'}</h:column>
-            <h:column><f:facet name="header">Ponudnik</f:facet>#{p.ponudnik != null ? p.ponudnik.ime : '—'}</h:column>
-            <h:column>
-                <f:facet name="header">Vozila</f:facet>
-                <ui:repeat value="#{p.kompatibilnaVozila}" var="v">
-                    #{v}<br/>
-                </ui:repeat>
-            </h:column>
-            <h:column>
-                <f:facet name="header">Dejanje</f:facet>
-                <h:panelGroup layout="block">
-                    <!-- Delete -->
-                    <h:panelGroup rendered="#{polnilnica.lokacijaZaPotrditevBrisanja ne p.lokacija}">
-                        <h:commandButton value="Izbriši"
-                                         action="#{polnilnica.potrdiBrisanjePolnilnice(p.lokacija)}"
-                                         styleClass="btn btn-danger btn-sm me-2" />
+                        <br/><br/>
+
+                        <!-- Edit -->
+                        <h:commandButton value="Uredi"
+                                         action="#{polnilnica.pripraviZaUrejanje(p)}"
+                                         styleClass="btn btn-warning btn-sm" />
                     </h:panelGroup>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+    </ui:define>
 
-                    <h:panelGroup rendered="#{polnilnica.lokacijaZaPotrditevBrisanja eq p.lokacija}">
-                        Ste prepričani?
-                        <h:commandButton value="Da" action="#{polnilnica.potrdiBrisanje}" styleClass="btn btn-danger btn-sm me-1" />
-                        <h:commandButton value="Ne" action="#{polnilnica.prekliciBrisanje}" immediate="true" styleClass="btn btn-secondary btn-sm" />
-                    </h:panelGroup>
-
-                    <br/><br/>
-
-                    <!-- Edit -->
-                    <h:commandButton value="Uredi"
-                                     action="#{polnilnica.pripraviZaUrejanje(p)}"
-                                     styleClass="btn btn-warning btn-sm" />
-                </h:panelGroup>
-            </h:column>
-        </h:dataTable>
-    </h:form>
-
-</h:body>
+</ui:composition>
 </html>
