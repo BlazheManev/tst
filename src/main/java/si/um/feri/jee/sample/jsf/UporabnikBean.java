@@ -1,8 +1,10 @@
 package si.um.feri.jee.sample.jsf;
 
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
-import si.um.feri.jee.sample.service.UporabnikService;
+import si.um.feri.jee.sample.service.uporabnik.UporabnikService;
+import si.um.feri.jee.sample.service.uporabnik.UporabnikServiceLocal;
 import si.um.feri.jee.sample.vao.Uporabnik;
 
 import java.io.Serializable;
@@ -12,8 +14,8 @@ import java.util.List;
 @SessionScoped
 public class UporabnikBean implements Serializable {
 
-    private final UporabnikService uporabnikService = new UporabnikService();
-
+    @EJB
+    private UporabnikServiceLocal uporabnikService;
     // === Input Fields ===
     private String ime;
     private String email;

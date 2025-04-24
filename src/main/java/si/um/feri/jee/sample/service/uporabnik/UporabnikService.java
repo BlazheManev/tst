@@ -1,5 +1,7 @@
-package si.um.feri.jee.sample.service;
+package si.um.feri.jee.sample.service.uporabnik;
 
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import si.um.feri.jee.sample.chainOfResponsability.PolnjenjeHandler;
 import si.um.feri.jee.sample.chainOfResponsability.PreveriKompatibilnost;
 import si.um.feri.jee.sample.chainOfResponsability.PreveriRazpolozljivost;
@@ -11,9 +13,11 @@ import si.um.feri.jee.sample.vao.Uporabnik;
 import java.util.List;
 import java.util.Optional;
 
-public class UporabnikService {
-    private final UporabnikDAO uporabnikDAO = UporabnikDAO.getInstance();
+@Stateless
+public class UporabnikService implements UporabnikServiceLocal, UporabnikServiceRemote {
 
+    @Inject
+    private UporabnikDAO uporabnikDAO;
     public void dodajUporabnika(String ime, String email, double stanje, String tipVozila) {
         Uporabnik novUporabnik = new Uporabnik(ime, email, stanje, tipVozila);
         uporabnikDAO.insertUporabnik(novUporabnik);

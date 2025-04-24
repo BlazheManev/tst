@@ -3,11 +3,10 @@ package si.um.feri.jee.sample.jsf;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
-import si.um.feri.jee.sample.service.elektricnaPolnilnica.ElektricnaPolnilnicaService;
 import si.um.feri.jee.sample.service.elektricnaPolnilnica.ElektricnaPolnilnicaServiceLocal;
-import si.um.feri.jee.sample.service.ponudnik.PonudnikService;
-import si.um.feri.jee.sample.service.UporabnikService;
+import si.um.feri.jee.sample.service.uporabnik.UporabnikService;
 import si.um.feri.jee.sample.service.ponudnik.PonudnikServiceLocal;
+import si.um.feri.jee.sample.service.uporabnik.UporabnikServiceLocal;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
 import si.um.feri.jee.sample.vao.Ponudnik;
 import si.um.feri.jee.sample.vao.Uporabnik;
@@ -26,7 +25,8 @@ public class PonudnikBean implements Serializable {
     private PonudnikServiceLocal ponudnikService;
     @EJB
     private ElektricnaPolnilnicaServiceLocal polnilnicaService;
-    private final UporabnikService uporabnikService = new UporabnikService();
+    @EJB
+    private UporabnikServiceLocal uporabnikService;
 
     // === Input Fields ===
     private String ime;
