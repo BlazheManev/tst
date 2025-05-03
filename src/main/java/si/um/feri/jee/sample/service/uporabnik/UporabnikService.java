@@ -7,6 +7,7 @@ import si.um.feri.jee.sample.chainOfResponsability.PreveriKompatibilnost;
 import si.um.feri.jee.sample.chainOfResponsability.PreveriRazpolozljivost;
 import si.um.feri.jee.sample.chainOfResponsability.PreveriStanje;
 import si.um.feri.jee.sample.dao.uporabnik.UporabnikDAO;
+import si.um.feri.jee.sample.dao.uporabnik.UporabnikDAOInterface;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
 import si.um.feri.jee.sample.vao.Uporabnik;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class UporabnikService implements UporabnikServiceLocal, UporabnikServiceRemote {
 
     @Inject
-    private UporabnikDAO uporabnikDAO;
+    private UporabnikDAOInterface uporabnikDAO;
     public void dodajUporabnika(String ime, String email, double stanje, String tipVozila) {
         Uporabnik novUporabnik = new Uporabnik(ime, email, stanje, tipVozila);
         uporabnikDAO.insertUporabnik(novUporabnik);

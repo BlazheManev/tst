@@ -11,4 +11,5 @@ public interface UporabnikDAOInterface {
     Optional<Uporabnik> getUporabnikByEmail(String email);
     void updateUporabnikStanje(String email, double novoStanje);
     void deleteUporabnik(String email);
+    void updateUporabnik(Uporabnik updated); // ← Add this
 }

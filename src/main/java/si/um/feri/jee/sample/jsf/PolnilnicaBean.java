@@ -9,6 +9,7 @@ import si.um.feri.jee.sample.service.ponudnik.PonudnikServiceLocal;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 @Named("polnilnica")
@@ -42,7 +43,7 @@ public class PolnilnicaBean implements Serializable {
             izbranaPolnilnica.setHitrostPolnjenja(hitrostPolnjenja);
             izbranaPolnilnica.setCenaPolnjenja(cenaPolnjenja);
             izbranaPolnilnica.setActive(active);
-            izbranaPolnilnica.setKompatibilnaVozila(kompatibilnaVozila);
+            izbranaPolnilnica.setKompatibilnaVozila(Arrays.asList(kompatibilnaVozila));
 
             polnilnicaService.updateElektricnaPolnilnica(izbranaPolnilnica);
         }
@@ -57,7 +58,7 @@ public class PolnilnicaBean implements Serializable {
         this.hitrostPolnjenja = p.getHitrostPolnjenja();
         this.cenaPolnjenja = p.getCenaPolnjenja();
         this.active = p.isActive();
-        this.kompatibilnaVozila = p.getKompatibilnaVozila();
+        this.kompatibilnaVozila = p.getKompatibilnaVozila().toArray(new String[0]);
     }
 
     public void potrdiBrisanjePolnilnice(String lokacija) {

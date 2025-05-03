@@ -1,69 +1,54 @@
 package si.um.feri.jee.sample.dao.uporabnik;
 
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import si.um.feri.jee.sample.vao.Uporabnik;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Optional;
 
+@Stateless
 public class UporabnikDAO implements UporabnikDAOInterface {
-    private static volatile UporabnikDAO instance;
-    private List<Uporabnik> uporabniki = Collections.synchronizedList(new ArrayList<>());
 
-    private UporabnikDAO() {}
-
-    public static UporabnikDAO getInstance() {
-        if (instance == null) {
-            synchronized (UporabnikDAO.class) {
-                if (instance == null) {
-                    instance = new UporabnikDAO();
-                }
-            }
-        }
-        return instance;
-    }
+    @PersistenceContext(unitName = "ChargingPU")
+    EntityManager em;
 
     @Override
     public void insertUporabnik(Uporabnik uporabnik) {
-        synchronized (uporabniki) {
-            uporabniki.add(uporabnik);
-        }
+        em.persist(uporabnik);
     }
 
     @Override
     public List<Uporabnik> getAllUporabniki() {
-        synchronized (uporabniki) {
-            return new ArrayList<>(uporabniki);
-        }
+        return em.createQuery("SELECT u FROM Uporabnik u", Uporabnik.class).getResultList();
     }
 
     @Override
     public Optional<Uporabnik> getUporabnikByEmail(String email) {
-        synchronized (uporabniki) {
-            return uporabniki.stream().filter(u -> u.getEmail().equals(email)).findFirst();
-        }
+        List<Uporabnik> result = em.createQuery(
+                        "SELECT u FROM Uporabnik u WHERE u.email = :email", Uporabnik.class)
+                .setParameter("email", email)
+                .getResultList();
+        return result.stream().findFirst();
     }
 
     @Override
     public void updateUporabnikStanje(String email, double novoStanje) {
-        synchronized (uporabniki) {
-            getUporabnikByEmail(email).ifPresent(u -> u.setStanje(novoStanje));
-        }
+        getUporabnikByEmail(email).ifPresent(u -> {
+            u.setStanje(novoStanje);
+            em.merge(u);
+        });
     }
 
     @Override
     public void deleteUporabnik(String email) {
-        synchronized (uporabniki) {
-            uporabniki.removeIf(u -> u.getEmail().equals(email));
-        }
+        getUporabnikByEmail(email).ifPresent(u -> {
+            em.remove(em.contains(u) ? u : em.merge(u));
+        });
     }
+
     public void updateUporabnik(Uporabnik updated) {
-        Optional<Uporabnik> obstojec = getUporabnikByEmail(updated.getEmail());
-        if (obstojec.isPresent()) {
-            Uporabnik u = obstojec.get();
-            u.setIme(updated.getIme());
-            u.setStanje(updated.getStanje());
-            u.setTipVozila(updated.getTipVozila());
-        }
+        em.merge(updated);
     }
 }

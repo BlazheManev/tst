@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import si.um.feri.jee.sample.dao.polnilnica.ElektricnaPolnilnicaDAOInterface;
 import si.um.feri.jee.sample.vao.ElektricnaPolnilnica;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class ElektricnaPolnilnicaService implements ElektricnaPolnilnicaServiceL
                 active,
                 null,
                 cenaPolnenja,
-                kompatibilnaVozila
+                Arrays.asList(kompatibilnaVozila)
         );
 
         polnilnicaDAO.insertElektricnaPolnilnica(polnilnica);
@@ -58,12 +59,8 @@ public class ElektricnaPolnilnicaService implements ElektricnaPolnilnicaServiceL
     public boolean lahkoPolni(String lokacija, String tipVozila) {
         Optional<ElektricnaPolnilnica> optional = getElektricnaPolnilnicaByLokacija(lokacija);
         return optional.map(p -> {
-            String[] types = p.getKompatibilnaVozila();
-            if (types == null) return false;
-            for (String t : types) {
-                if (t.equalsIgnoreCase(tipVozila)) return true;
-            }
-            return false;
+            List<String> types = p.getKompatibilnaVozila();
+            return types != null && types.contains(tipVozila);
         }).orElse(false);
     }
 }
