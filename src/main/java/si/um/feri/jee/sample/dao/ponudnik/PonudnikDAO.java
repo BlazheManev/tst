@@ -1,62 +1,49 @@
 package si.um.feri.jee.sample.dao.ponudnik;
+
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import si.um.feri.jee.sample.vao.Ponudnik;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Stateless
 public class PonudnikDAO implements PonudnikDAOInterface {
-    private static volatile PonudnikDAO instance;
-    private List<Ponudnik> ponudniki = Collections.synchronizedList(new ArrayList<>());
 
-    private PonudnikDAO() {}
-
-
-    // Singleton metoda
-    public static PonudnikDAO getInstance() {
-        if (instance == null) {
-            synchronized (PonudnikDAO.class) {
-                if (instance == null) {
-                    instance = new PonudnikDAO();
-                }
-            }
-        }
-        return instance;
-    }
+    @PersistenceContext(unitName = "ChargingPU")
+    EntityManager em;
 
     @Override
     public void insertPonudnik(Ponudnik ponudnik) {
-        synchronized (ponudniki) {
-            ponudniki.add(ponudnik);
-        }
+        em.merge(ponudnik); // 👈 Use merge instead of persist
     }
 
     @Override
     public List<Ponudnik> getAllPonudniki() {
-        synchronized (ponudniki) {
-            return new ArrayList<>(ponudniki);
-        }
+        return em.createQuery("SELECT p FROM Ponudnik p", Ponudnik.class).getResultList();
     }
 
     @Override
     public Optional<Ponudnik> getPonudnikByIme(String ime) {
-        synchronized (ponudniki) {
-            return ponudniki.stream().filter(p -> p.getIme().equals(ime)).findFirst();
-        }
+        List<Ponudnik> result = em.createQuery("SELECT p FROM Ponudnik p WHERE p.ime = :ime", Ponudnik.class)
+                .setParameter("ime", ime)
+                .getResultList();
+        return result.stream().findFirst();
     }
 
     @Override
     public void updatePonudnik(String ime, String newNaslov) {
-        synchronized (ponudniki) {
-            getPonudnikByIme(ime).ifPresent(p -> p.setNaslov(newNaslov));
-        }
+        getPonudnikByIme(ime).ifPresent(p -> {
+            p.setNaslov(newNaslov);
+            em.merge(p);
+        });
     }
 
     @Override
     public void deletePonudnik(String ime) {
-        synchronized (ponudniki) {
-            ponudniki.removeIf(p -> p.getIme().equals(ime));
-        }
+        getPonudnikByIme(ime).ifPresent(p -> {
+            em.remove(em.contains(p) ? p : em.merge(p));
+        });
     }
 }

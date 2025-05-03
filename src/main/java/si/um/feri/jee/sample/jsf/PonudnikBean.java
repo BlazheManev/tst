@@ -42,13 +42,15 @@ public class PonudnikBean implements Serializable {
 
     // === CRUD ===
 
-    public void dodajPonudnika() {
+    public String dodajPonudnika() {
+        System.out.println("sfasfasfasfasf");
         if (izbranPonudnik == null) {
             ponudnikService.createPonudnik(ime, naslov, izbranePolnilnice);
         } else {
             ponudnikService.updatePonudnik(izbranPonudnik.getIme(), naslov);
         }
         resetForm();
+        return null; // 👈 stay on same page
     }
     public void pripraviZaUrejanje(Ponudnik p) {
         izbranPonudnik = p;

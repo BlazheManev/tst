@@ -23,7 +23,8 @@
                 </div>
                 <div class="col-md-12">
                     <h:outputLabel value="Dodaj polnilnice (neobvezno):" />
-                    <h:selectManyListbox value="#{ponudnikBean.izbranePolnilnice}" size="5" styleClass="form-select">
+                    <h:selectManyListbox value="#{ponudnikBean.izbranePolnilnice}" size="5"
+                                         styleClass="form-select" converter="polnilnicaConverter">
                         <f:selectItems value="#{ponudnikBean.prostePolnilnice}" var="p"
                                        itemLabel="#{p.lokacija}" itemValue="#{p}" />
                     </h:selectManyListbox>

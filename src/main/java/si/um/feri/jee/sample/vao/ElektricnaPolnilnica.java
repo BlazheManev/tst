@@ -140,4 +140,17 @@ public class ElektricnaPolnilnica {
                 ", active=" + active +
                 '}';
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElektricnaPolnilnica)) return false;
+        ElektricnaPolnilnica that = (ElektricnaPolnilnica) o;
+        return lokacija != null && lokacija.equals(that.lokacija);
+    }
+
+    @Override
+    public int hashCode() {
+        return lokacija != null ? lokacija.hashCode() : 0;
+    }
+
 }
